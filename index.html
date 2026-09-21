@@ -308,8 +308,12 @@
 
         const BLYNK_TOKEN = "oh40vpcVfzuLVmCgCoMJ8C9CQaajPQwK";
         const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwi9MvVAjv0jiqqqM6vh3mgm5IjKwv_8A-DzMaiRTdjDE8ldgfBqYx8jRWhql1cj9g/exec"; 
-        const START_TIME = "07:45"; 
-        const END_TIME   = "17:15"; 
+
+        // กำหนดช่วงเวลาใช้งานของ User ปกติ
+        const WEEKDAY_START = "07:45"; 
+        const WEEKDAY_END   = "17:15"; 
+        const SATURDAY_START = "07:45"; 
+        const SATURDAY_END   = "12:15"; 
 
         let currentUser = null;
         let isHardwareOnline = false;
@@ -349,20 +353,33 @@
         function isTimeAllowed() {
             if (!currentUser) return false;
             
+            // สิทธิ์ VIP เข้าใช้งานได้ตลอด 24 ชั่วโมง ทุกวัน
             if (currentUser.isVIP) {
                 return true;
             }
 
             const now = new Date();
+            const dayOfWeek = now.getDay(); // 0 = อาทิตย์, 1 = จันทร์, ..., 6 = เสาร์
             const currentMinutes = now.getHours() * 60 + now.getMinutes();
-            const startMinutes = timeToMinutes(START_TIME);
-            const endMinutes = timeToMinutes(END_TIME);
 
-            if (startMinutes <= endMinutes) {
-                return currentMinutes >= startMinutes && currentMinutes < endMinutes;
-            } else {
-                return currentMinutes >= startMinutes || currentMinutes < endMinutes;
+            // วันอาทิตย์ (0): ผู้ใช้ทั่วไปไม่อนุญาตให้เปิดใช้งาน
+            if (dayOfWeek === 0) {
+                return false;
             }
+
+            let startMinutes, endMinutes;
+
+            if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+                // จันทร์ - ศุกร์
+                startMinutes = timeToMinutes(WEEKDAY_START);
+                endMinutes = timeToMinutes(WEEKDAY_END);
+            } else if (dayOfWeek === 6) {
+                // เสาร์
+                startMinutes = timeToMinutes(SATURDAY_START);
+                endMinutes = timeToMinutes(SATURDAY_END);
+            }
+
+            return currentMinutes >= startMinutes && currentMinutes < endMinutes;
         }
 
         // ฟังก์ชันตรวจสอบสถานะ Online / Offline ของ ESP8266 ผ่าน Blynk API
@@ -413,7 +430,7 @@
             }
 
             if (!isTimeAllowed()) {
-                alert(`ລະບົບອະນຸຍາດໃຫ້ໃຊ້ງານໄດ້ສະເພາະช่วงເວລາ ${START_TIME} - ${END_TIME} ເທົ່ານັ້ນ`);
+                alert(`ນອກເວລາทำการ! จันทร์-ศุกร์: ${WEEKDAY_START}-${WEEKDAY_END}, เสาร์: ${SATURDAY_START}-${SATURDAY_END}`);
                 return;
             }
 
@@ -441,11 +458,14 @@
                 if (currentUser.isVIP) {
                     statusTextEl.textContent = `ພ້ອມໃຊ້ງານ (สิทธิ์พิเศษ 24 ຊົ່ວໂມງ)`;
                 } else {
-                    statusTextEl.textContent = `ພ້ອມໃຊ້ງານ (${START_TIME} - ${END_TIME})`;
+                    const now = new Date();
+                    const day = now.getDay();
+                    const timeRange = (day === 6) ? `${SATURDAY_START} - ${SATURDAY_END}` : `${WEEKDAY_START} - ${WEEKDAY_END}`;
+                    statusTextEl.textContent = `ພ້ອມໃຊ້ງານ (${timeRange})`;
                 }
                 statusEl.className = "status-badge allowed";
             } else {
-                statusTextEl.textContent = `ນອກເວລາทำการ (${START_TIME} - ${END_TIME})`;
+                statusTextEl.textContent = `ນອກເວລາทำการ`;
                 statusEl.className = "status-badge denied";
             }
 

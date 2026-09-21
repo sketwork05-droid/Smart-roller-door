@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Web App / PWA Meta Tags สำหรับ iOS & Android -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Smart Door">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0f172a">
+
+    <title>SMART POWER ENGINEERING SOLUTIONS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #10b981;
+            --success-hover: #059669;
+            --danger: #ef4444;
+            --danger-hover: #dc2626;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans Lao', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 440px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 32px 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: center;
+        }
+
+        .company-header {
+            margin-bottom: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 16px;
+        }
+
+        .company-name {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #38bdf8;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .app-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Input Styling */
+        .pin-input {
+            width: 100%;
+            padding: 16px;
+            font-size: 24px;
+            letter-spacing: 12px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #fff;
+            margin-bottom: 16px;
+            outline: none;
+        }
+
+        .pin-input:focus {
+            border-color: var(--primary);
+        }
+
+        .user-info {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .user-details { text-align: left; }
+        .user-name { font-weight: bold; color: #38bdf8; }
+        .user-pos { font-size: 12px; color: var(--text-sub); }
+
+        .btn-logout {
+            background: transparent;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+        }
+
+        /* Status & Badges */
+        .status-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 13px;
+            width: fit-content;
+        }
+
+        .status-badge.allowed {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-badge.denied {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* Online/Offline Status Styling */
+        .status-badge.online {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .status-badge.offline {
+            background: rgba(148, 163, 184, 0.15);
+            color: #94a3b8;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .online .status-dot {
+            background-color: #10b981;
+            box-shadow: 0 0 8px #10b981;
+        }
+
+        .offline .status-dot {
+            background-color: #94a3b8;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active:not(:disabled) { transform: scale(0.98); }
+        .btn:disabled {
+            background: #334155 !important;
+            color: #64748b !important;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .btn-open { background: var(--success); }
+        .btn-stop { background: var(--danger); }
+        .btn-close { background: var(--primary); }
+
+        .hidden { display: none !important; }
+        .error-msg { color: var(--danger); font-size: 14px; margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="company-header">
+            <div class="company-name">SMART POWER ENGINEERING SOLUTIONS, CO., LTD.</div>
+            <div class="app-title">
+                <span class="material-icons-round">garage</span>
+                ລະບົບຄວບຄຸມປະຕູມ້ວນ
+            </div>
+        </div>
+
+        <!-- หน้าจอล็อกอิน -->
+        <div id="login-screen">
+            <h3 style="margin-bottom: 16px; font-weight: 500;">ກະລຸນາປ້ອນລະຫັດ PIN 4 ຫຼັກ</h3>
+            <input type="password" id="pin-code" class="pin-input" maxlength="4" placeholder="••••" pattern="\d*" inputmode="numeric">
+            <div id="login-error" class="error-msg hidden">ລະຫັດ PIN ບໍ່ຖືກຕ້ອງ!</div>
+            <button class="btn btn-close" onclick="login()">
+                <span class="material-icons-round">lock_open</span>
+                ເຂົ້າสู่ລະບົບ
+            </button>
+        </div>
+
+        <!-- หน้าจอควบคุมระบบ -->
+        <div id="main-screen" class="hidden">
+            <div class="user-info">
+                <div class="user-details">
+                    <div class="user-name" id="display-user-name">-</div>
+                    <div class="user-pos" id="display-user-pos">-</div>
+                </div>
+                <button class="btn-logout" onclick="logout()">
+                    <span class="material-icons-round">logout</span> ອອກ
+                </button>
+            </div>
+
+            <div class="status-container">
+                <!-- แถบแสดง Online / Offline ของบอร์ด ESP8266 -->
+                <div id="hw-status" class="status-badge offline">
+                    <span class="status-dot"></span>
+                    <span id="hw-status-text">ກຳລັງກວດສອບสัญญาณบอร์ด...</span>
+                </div>
+
+                <!-- แถบแสดงสถานะช่วงเวลา -->
+                <div id="status" class="status-badge denied">
+                    <span id="status-text">ກຳລັງກວດສອບເວລາ...</span>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-open" onclick="sendCommand('v1', 'ເປີດປະຕູ')">
+                    <span class="material-icons-round">arrow_upward</span> ໄຂປະຕູ (OPEN)
+                </button>
+                <button class="btn btn-stop" onclick="sendCommand('v2', 'ຢຸດປະຕູ')">
+                    <span class="material-icons-round">pause</span> ຢຸດ (STOP)
+                </button>
+                <button class="btn btn-close" onclick="sendCommand('v3', 'ປິດປະຕູ')">
+                    <span class="material-icons-round">arrow_downward</span> ອັດປະຕູ (CLOSE)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <iframe name="hidden_frame" id="hidden_frame" style="display:none;"></iframe>
+
+    <script>
+        const USER_DATABASE = {
+            "1233": { name: "Chanh", position: "CEO", isVIP: true },
+            "1232": { name: "Somchai", position: "Admin", isVIP: true },
+            "5673": { name: "Souksanh", position: "Senior Engineer", isVIP: false },
+            "9872": { name: "Yangkua", position: "Purchassing Leader", isVIP: false },
+            "5643": { name: "Chuexoing", position: "Electrical engineer", isVIP: false },
+            "0953": { name: "Seelue", position: "Electrical engineer", isVIP: false },
+            "0657": { name: "Kominh", position: "Electrician", isVIP: false },
+            "9540": { name: "Kilar", position: "Electrician", isVIP: false },
+            "2953": { name: "Pakou", position: "Purchasing", isVIP: false },
+            "0421": { name: "Kalue", position: "Financer", isVIP: false },
+            "0435": { name: "Aia", position: "Purchassing", isVIP: false },
+            "0000": { name: "Admin", position: "System Administrator", isVIP: true }
+        };
+
+        const BLYNK_TOKEN = "oh40vpcVfzuLVmCgCoMJ8C9CQaajPQwK";
+        const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwi9MvVAjv0jiqqqM6vh3mgm5IjKwv_8A-DzMaiRTdjDE8ldgfBqYx8jRWhql1cj9g/exec"; 
+        const START_TIME = "07:00"; 
+        const END_TIME   = "18:00"; 
+
+        let currentUser = null;
+        let isHardwareOnline = false;
+
+        function login() {
+            const pin = document.getElementById('pin-code').value;
+            const errorEl = document.getElementById('login-error');
+
+            if (USER_DATABASE[pin]) {
+                currentUser = USER_DATABASE[pin];
+                document.getElementById('display-user-name').textContent = currentUser.name;
+                document.getElementById('display-user-pos').textContent = currentUser.position;
+                
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-screen').classList.remove('hidden');
+                errorEl.classList.add('hidden');
+                document.getElementById('pin-code').value = '';
+                
+                checkHardwareStatus();
+                updateUI();
+            } else {
+                errorEl.classList.remove('hidden');
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('main-screen').classList.add('hidden');
+        }
+
+        function timeToMinutes(timeStr) {
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+
+        function isTimeAllowed() {
+            if (!currentUser) return false;
+            
+            if (currentUser.isVIP) {
+                return true;
+            }
+
+            const now = new Date();
+            const currentMinutes = now.getHours() * 60 + now.getMinutes();
+            const startMinutes = timeToMinutes(START_TIME);
+            const endMinutes = timeToMinutes(END_TIME);
+
+            if (startMinutes <= endMinutes) {
+                return currentMinutes >= startMinutes && currentMinutes < endMinutes;
+            } else {
+                return currentMinutes >= startMinutes || currentMinutes < endMinutes;
+            }
+        }
+
+        // ฟังก์ชันตรวจสอบสถานะ Online / Offline ของ ESP8266 ผ่าน Blynk API
+        function checkHardwareStatus() {
+            const url = `https://sgp1.blynk.cloud/external/api/isHardwareConnected?token=${BLYNK_TOKEN}`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(isConnected => {
+                    isHardwareOnline = isConnected;
+                    const hwStatusEl = document.getElementById('hw-status');
+                    const hwStatusTextEl = document.getElementById('hw-status-text');
+
+                    if (isHardwareOnline) {
+                        hwStatusTextEl.textContent = "ອຸປະກອນ: ອອນໄລນ໌ (Online)";
+                        hwStatusEl.className = "status-badge online";
+                    } else {
+                        hwStatusTextEl.textContent = "ອຸປະກອນ: ອອບໄລນ໌ (Offline)";
+                        hwStatusEl.className = "status-badge offline";
+                    }
+                    updateUI();
+                })
+                .catch(err => {
+                    console.error("Error checking hardware status:", err);
+                    isHardwareOnline = false;
+                    updateUI();
+                });
+        }
+
+        function saveToGoogleSheet(actionText) {
+            if (!currentUser) return;
+
+            const formData = new URLSearchParams();
+            formData.append("user", currentUser.name);
+            formData.append("position", currentUser.position);
+            formData.append("action", actionText);
+
+            fetch(GAS_WEB_APP_URL, {
+                method: "POST",
+                body: formData
+            }).catch(err => console.error("Error saving to Sheet:", err));
+        }
+
+        function sendCommand(pin, actionText) {
+            if (!isHardwareOnline) {
+                alert("ບໍ່ສາມາດສົ່ງຄຳສັ່ງໄດ້ ເນື່ອງຈາກອຸປະກອນ (ESP8266) ອອບໄລນ໌ຢູ່!");
+                return;
+            }
+
+            if (!isTimeAllowed()) {
+                alert(`ລະບົບອະນຸຍາດໃຫ້ໃຊ້ງານໄດ້ສະເພາະช่วงເວລາ ${START_TIME} - ${END_TIME} ເທົ່ານັ້ນ`);
+                return;
+            }
+
+            // 1. ส่งคำสั่งไป Blynk API
+            const url = `https://sgp1.blynk.cloud/external/api/update?token=${BLYNK_TOKEN}&${pin}=1`;
+            document.getElementById('hidden_frame').src = url;
+
+            setTimeout(() => {
+                document.getElementById('hidden_frame').src = `https://sgp1.blynk.cloud/external/api/update?token=${BLYNK_TOKEN}&${pin}=0`;
+            }, 500);
+
+            // 2. บันทึกประวัติลง Google Sheet
+            saveToGoogleSheet(actionText);
+        }
+
+        function updateUI() {
+            if (!currentUser) return;
+
+            const statusEl = document.getElementById('status');
+            const statusTextEl = document.getElementById('status-text');
+            const buttons = document.querySelectorAll('#main-screen .btn');
+            const allowed = isTimeAllowed();
+
+            if (allowed) {
+                if (currentUser.isVIP) {
+                    statusTextEl.textContent = `ພ້ອມໃຊ້ງານ (สิทธิ์พิเศษ 24 ຊົ່ວໂມງ)`;
+                } else {
+                    statusTextEl.textContent = `ພ້ອມໃຊ້ງານ (${START_TIME} - ${END_TIME})`;
+                }
+                statusEl.className = "status-badge allowed";
+            } else {
+                statusTextEl.textContent = `ນອກເວລາทำการ (${START_TIME} - ${END_TIME})`;
+                statusEl.className = "status-badge denied";
+            }
+
+            // ปุ่มกดจะสามารถใช้งานได้ก็ต่อเมื่อ "อยู่ในช่วงเวลา" และ "บอร์ด Online อยู่" เท่านั้น
+            const canOperate = allowed && isHardwareOnline;
+            buttons.forEach(btn => btn.disabled = !canOperate);
+        }
+
+        // เช็กสถานะ Hardware ทุกๆ 5 วินาที
+        setInterval(checkHardwareStatus, 5000);
+        // อัปเดต UI เช็กเวลาทุกๆ 10 วินาที
+        setInterval(updateUI, 10000);
+    </script>
+</body>
+</html>
